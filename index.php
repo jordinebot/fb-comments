@@ -30,12 +30,14 @@
         <tr>
           <th>User ID</th>
           <th>User Name</th>
+          <th>Message</th>
           <th>Timestamp</th>
           <th>Liked post</th>
         </tr>
       </thead>
       <tbody id="output">
         <tr>
+          <td style="text-align: center;"><img src="loader.gif"/></td>
           <td style="text-align: center;"><img src="loader.gif"/></td>
           <td style="text-align: center;"><img src="loader.gif"/></td>
           <td style="text-align: center;"><img src="loader.gif"/></td>
@@ -73,9 +75,11 @@
 
     $(document).ready(function() {
 
+      https://www.facebook.com/photo.php?fbid=592954007425098&set=a.282745358445966.75558.247128828674286&type=1&stream_ref=10
+
       var config = {
         appId : '548396958576106',
-        postId : <?php echo ( (  isset( $_GET['post_id'] ) ) ? $_GET['post_id'] : '614436355280391' ); ?>,
+        postId : <?php echo ( (  isset( $_GET['post_id'] ) ) ? $_GET['post_id'] : '592954007425098' ); ?>,
         limit : '99999',
         flag : true
       };
@@ -118,7 +122,7 @@
               var row = comments.data[i];
               var liked = (likes.indexOf(row.from.id) != -1);
               both = (liked) ? both + 1 : both;
-              output.append('<tr><td><a target="_blank" href="//facebook.com/' + row.from.id + '">' + row.from.id + '</a></td><td>' + row.from.name.removeDiacritics() + '</td><td>' + row.created_time + '</td><td>' + ((liked) ? 'Yes' : 'No') + '</td></tr>');
+              output.append('<tr><td><a target="_blank" href="//facebook.com/' + row.from.id + '">' + row.from.id + '</a></td><td>' + row.from.name.removeDiacritics() + '</td><td>' + row.message.removeDiacritics() + '</td><td>' + row.created_time + '</td><td>' + ((liked) ? 'Yes' : 'No') + '</td></tr>');
             };
 
             bothCounter.text(both).removeClass('hidden');
@@ -164,12 +168,12 @@
       // Export to Excel
       var exportToExcel = function() {
         event.preventDefault();
-        var csvContent = "data:text/csv;charset=iso-8859-1,\"User Id\";\"User Name\";\"Timestamp\";\"Liked Post\"\n";
+        var csvContent = "data:text/csv;charset=iso-8859-1,\"User Id\";\"User Name\";\"Message\";\"Timestamp\";\"Liked Post\"\n";
         var rows = output.children('tr');
         if (rows.length > 1) {
           for (var i = 0; i < rows.length; i++) {
             var cells = rows[i].children;
-            var dataString = "\"" + cells[0].innerText + "\";\"" + cells[1].innerText + "\";\"" + cells[2].innerText + "\";\"" + cells[3].innerText + "\"\n";
+            var dataString = "\"" + cells[0].innerText + "\";\"" + cells[1].innerText + "\";\"" + cells[2].innerText + "\";\"" + cells[3].innerText + "\";\"" + cells[4].innerText + "\"\n";
             csvContent += dataString;
           }
         } else {
