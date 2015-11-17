@@ -6,6 +6,7 @@
   <style type="text/css">
   body { font-family: sans-serif; }
   p { font-size: 14px; }
+  p.console { font-family: monospace; color: red;}
   .tftable {font-size:12px;color:#333333;width:100%;border-width: 1px;border-color: #729ea5;border-collapse: collapse;}
   .tftable th {font-size:12px;background-color:#acc8cc;border-width: 1px;padding: 8px;border-style: solid;border-color: #729ea5;text-align:left;}
   .tftable tr {background-color:#ffffff;}
@@ -24,6 +25,7 @@
       <p>Total comments: <span id="comments_counter" class="hidden"></span></p>
       <p>Total likes: <span id="likes_counter" class="hidden"></span></p>
       <p>Users who comment and like: <span id="both_counter" class="hidden"></span><span id="percent" class="hidden">()</span></p>
+      <p class="console"></p>
     <form action="." method="post"><input id="export_to_excel" type="submit" value="Export to Excel"/></form>
     <table class="tftable" border="1">
       <thead>
@@ -75,16 +77,16 @@
 
     $(document).ready(function() {
 
-      https://www.facebook.com/photo.php?fbid=592954007425098&set=a.282745358445966.75558.247128828674286&type=1&stream_ref=10
-
       var config = {
         appId : '548396958576106',
-        postId : <?php echo ( (  isset( $_GET['post_id'] ) ) ? $_GET['post_id'] : '592954007425098' ); ?>,
+        accessToken: '<?php echo ( (  isset( $_GET['access_token'] ) ) ? $_GET['access_token'] : '' ); ?>',
+        postId : '<?php echo ( (  isset( $_GET['post_id'] ) ) ? $_GET['post_id'] : '' ); ?>',
         limit : '99999',
         flag : true
       };
 
       var output = $('#output'),
+          console = $('p.console'),
           commentCounter = $('#comments_counter'),
           likesCounter = $('#likes_counter'),
           bothCounter = $('#both_counter'),
@@ -97,21 +99,27 @@
 
           FB.api(call, function(response) {
 
-            for (var i = 0; i < response.data.length; i++) {
-              likes.push(response.data[i].id);
+            if (typeof response.error != 'object') {
+              for (var i = 0; i < response.data.length; i++) {
+                likes.push(response.data[i].id);
+              }
+
+              if (typeof(response.paging.next) != 'undefined') {
+                getData(likes, response.paging.next);
+              } else {
+                getData(likes);
+              }
+            } else {
+              output.html('');
+              console.html(response.error.message);
             }
 
-            if (typeof(response.paging.next) != 'undefined') {
-              getData(likes, response.paging.next);
-            } else {
-              getData(likes);
-            }
 
           });
 
         } else {
 
-          FB.api(config.postId + '/comments?filter=stream&limit=' + config.limit, function(comments) {
+          FB.api(config.postId + '/comments?filter=stream&limit=' + config.limit + '&access_token=' + config.accessToken, function(comments) {
 
             output.html('');
             commentCounter.text(comments.data.length).removeClass('hidden');
@@ -142,7 +150,7 @@
           xfbml      : true                                  // Look for social plugins on the page
         });
 
-        getData([], config.postId + '/likes?fields=id&limit=' + config.limit);
+        getData([], config.postId + '/likes?fields=id&limit=' + config.limit + '&access_token=' + config.accessToken);
 
       };
 
