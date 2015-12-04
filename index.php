@@ -79,8 +79,8 @@
 
       var config = {
         appId : '548396958576106',
-        accessToken: '<?php echo ( (  isset( $_GET['access_token'] ) ) ? $_GET['access_token'] : '' ); ?>',
-        postId : '<?php echo ( (  isset( $_GET['post_id'] ) ) ? $_GET['post_id'] : '' ); ?>',
+        accessToken: '<?php echo isset( $_GET['access_token'] ) ? $_GET['access_token'] : ''; ?>',
+        postId : '<?php echo isset( $_GET['post_id'] ) ? $_GET['post_id'] : ''; ?>',
         limit : '99999',
         flag : true
       };
