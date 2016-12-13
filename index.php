@@ -19,7 +19,6 @@
   <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 </head>
 <body>
-  <?php if ( $_GET['auth'] == '7c9ea9fd2bfff6a4533cd6a9cf932f328be4715c' ) { ?>
   <div id="fb-root"></div>
   <div id="main">
       <p>Total comments: <span id="comments_counter" class="hidden"></span></p>
@@ -81,7 +80,7 @@
         appId : '548396958576106',
         accessToken: '<?php echo isset( $_GET['access_token'] ) ? $_GET['access_token'] : ''; ?>',
         postId : '<?php echo isset( $_GET['post_id'] ) ? $_GET['post_id'] : ''; ?>',
-        limit : '99999',
+        limit : '<?php echo isset( $_GET['limit'] ) ? $_GET['limit'] : 9999; ?>',
         flag : true
       };
 
@@ -202,8 +201,5 @@
 
     });
   </script>
-  <?php } else { ?>
-    <p>Authentication failed.</p>
-  <?php } ?>
 </body>
 </html>
