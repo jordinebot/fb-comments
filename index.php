@@ -29,6 +29,7 @@
     <table class="tftable" border="1">
       <thead>
         <tr>
+          <th>#</th>
           <th>User ID</th>
           <th>User Name</th>
           <th>Message</th>
@@ -38,6 +39,7 @@
       </thead>
       <tbody id="output">
         <tr>
+          <td style="text-align: center;">1</td>
           <td style="text-align: center;"><img src="loader.gif"/></td>
           <td style="text-align: center;"><img src="loader.gif"/></td>
           <td style="text-align: center;"><img src="loader.gif"/></td>
@@ -129,7 +131,7 @@
               var row = comments.data[i];
               var liked = (likes.indexOf(row.from.id) != -1);
               both = (liked) ? both + 1 : both;
-              output.append('<tr><td><a target="_blank" href="//facebook.com/' + row.from.id + '">' + row.from.id + '</a></td><td>' + row.from.name.removeDiacritics() + '</td><td>' + row.message.removeDiacritics() + '</td><td>' + row.created_time + '</td><td>' + ((liked) ? 'Yes' : 'No') + '</td></tr>');
+              output.append('<tr><td id="' + i + '">' + (i + 1) + '</td><td><a target="_blank" href="//facebook.com/' + row.from.id + '">' + row.from.id + '</a></td><td>' + row.from.name.removeDiacritics() + '</td><td>' + row.message.removeDiacritics() + '</td><td>' + row.created_time + '</td><td>' + ((liked) ? 'Yes' : 'No') + '</td></tr>');
             };
 
             bothCounter.text(both).removeClass('hidden');
