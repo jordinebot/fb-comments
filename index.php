@@ -9,9 +9,10 @@
   p.console { font-family: monospace; color: red;}
   .tftable {font-size:12px;color:#333333;width:100%;border-width: 1px;border-color: #729ea5;border-collapse: collapse;}
   .tftable th {font-size:12px;background-color:#acc8cc;border-width: 1px;padding: 8px;border-style: solid;border-color: #729ea5;text-align:left;}
-  .tftable tr {background-color:#ffffff;}
+  .tftable tr {background-color:#ffffff; transition: background-color 100ms;}
   .tftable td {font-size:12px;border-width: 1px;padding: 8px;border-style: solid;border-color: #729ea5;}
   .tftable tr:hover {background-color:#ffff99;}
+  .tftable tr.current {background-color:#ff99ff;}
   .hidden {display: none;}
   span {font-weight: bold;}
   form input {margin: 10px 1px 5px 0; float: right;}
@@ -25,7 +26,7 @@
       <p>Total likes: <span id="likes_counter" class="hidden"></span></p>
       <p>Users who comment and like: <span id="both_counter" class="hidden"></span><span id="percent" class="hidden">()</span></p>
       <p class="console"></p>
-    <form action="." method="post"><input id="export_to_excel" type="submit" value="Export to Excel"/></form>
+    <form action="." method="post"><input id="pick_one" type="button" value="Pick one!"/><input id="export_to_excel" type="submit" value="Export to Excel"/></form>
     <table class="tftable" border="1">
       <thead>
         <tr>
@@ -86,13 +87,14 @@
         flag : true
       };
 
-      var output = $('#output'),
-          console = $('p.console'),
+      var output         = $('#output'),
+          console        = $('p.console'),
           commentCounter = $('#comments_counter'),
-          likesCounter = $('#likes_counter'),
-          bothCounter = $('#both_counter'),
-          percent = $('#percent'),
-          btnExport = $('#export_to_excel');
+          likesCounter   = $('#likes_counter'),
+          bothCounter    = $('#both_counter'),
+          percent        = $('#percent'),
+          btnExport      = $('#export_to_excel');
+          pickOne        = $('#pick_one');
 
       var getData = function(likes, call) {
 
@@ -131,7 +133,7 @@
               var row = comments.data[i];
               var liked = (likes.indexOf(row.from.id) != -1);
               both = (liked) ? both + 1 : both;
-              output.append('<tr><td id="' + i + '">' + (i + 1) + '</td><td><a target="_blank" href="//facebook.com/' + row.from.id + '">' + row.from.id + '</a></td><td>' + row.from.name.removeDiacritics() + '</td><td>' + row.message.removeDiacritics() + '</td><td>' + row.created_time + '</td><td>' + ((liked) ? 'Yes' : 'No') + '</td></tr>');
+              output.append('<tr id="' + i + '"><td>' + (i + 1) + '</td><td><a target="_blank" href="//facebook.com/' + row.from.id + '">' + row.from.id + '</a></td><td>' + row.from.name.removeDiacritics() + '</td><td>' + row.message.removeDiacritics() + '</td><td>' + row.created_time + '</td><td>' + ((liked) ? 'Yes' : 'No') + '</td></tr>');
             };
 
             bothCounter.text(both).removeClass('hidden');
@@ -199,7 +201,21 @@
         return false;
       }
 
+      function random(min, max) {
+        return Math.floor(Math.random() * ( max - min + 1) + min);
+      }
+
+      function randomlyPickOne() {
+        $('.current').removeClass('current');
+        var rows = output.children('tr');
+        var number = random(0, rows.length - 1);
+        rows[number].classList.add('current');
+        window.location = '#' + rows[number].id;
+      }
+
+
       btnExport.on('click', exportToExcel);
+      pickOne.on('click', randomlyPickOne);
 
     });
   </script>
